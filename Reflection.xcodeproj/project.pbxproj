@@ -16,7 +16,6 @@
 		530960020D9C4D3500F143AD /* scene.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 53095FFD0D9C4D3500F143AD /* scene.jpg */; };
 		5309602E0D9C4E0800F143AD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5309602D0D9C4E0800F143AD /* QuartzCore.framework */; };
 		531FD7650DBE453C00FB9AF3 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 531FD7610DBE453C00FB9AF3 /* MainWindow.xib */; };
-		537654D00E82CBCB006C23AF /* CustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 537654CF0E82CBCB006C23AF /* CustomCell.m */; };
 		5376557C0E82DCDC006C23AF /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 5376557B0E82DCDC006C23AF /* Default.png */; };
 /* End PBXBuildFile section */
 
@@ -34,8 +33,6 @@
 		53095FFD0D9C4D3500F143AD /* scene.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = scene.jpg; path = images/scene.jpg; sourceTree = "<group>"; };
 		5309602D0D9C4E0800F143AD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		531FD7620DBE453C00FB9AF3 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		537654CE0E82CBCB006C23AF /* CustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCell.h; sourceTree = "<group>"; };
-		537654CF0E82CBCB006C23AF /* CustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCell.m; sourceTree = "<group>"; };
 		5376557B0E82DCDC006C23AF /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = images/Default.png; sourceTree = "<group>"; };
 		53B6BA820DCFAFDE0095FEC4 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -107,8 +104,6 @@
 				53095FF30D9C4D1A00F143AD /* AppDelegate.m */,
 				53095FF10D9C4D1A00F143AD /* MyViewController.h */,
 				53095FF00D9C4D1A00F143AD /* MyViewController.m */,
-				537654CE0E82CBCB006C23AF /* CustomCell.h */,
-				537654CF0E82CBCB006C23AF /* CustomCell.m */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -178,7 +173,6 @@
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				53095FF40D9C4D1A00F143AD /* MyViewController.m in Sources */,
 				53095FF50D9C4D1A00F143AD /* AppDelegate.m in Sources */,
-				537654D00E82CBCB006C23AF /* CustomCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,7 +218,7 @@
 				GCC_PREFIX_HEADER = Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				PREBINDING = NO;
-				PRODUCT_NAME = PageBrowser;
+				PRODUCT_NAME = Reflection;
 			};
 			name = Release;
 		};
@@ -235,11 +229,13 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = iphonesimulator2.0;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos3.0;
 			};
 			name = Debug;
 		};
@@ -248,11 +244,14 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos2.0;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos3.0;
 			};
 			name = Release;
 		};
