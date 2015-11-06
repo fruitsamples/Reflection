@@ -1,7 +1,7 @@
 /*
      File: MyViewController.m
  Abstract: Main view controller for displaying the image, reflection and slider table.
-  Version: 1.2
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,12 +41,11 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2009 Apple Inc. All Rights Reserved.
+ Copyright (C) 2010 Apple Inc. All Rights Reserved.
  
  */
 
 #import "MyViewController.h"
-#import "QuartzCore/QuartzCore.h" // for CALayer
 
 @interface MyViewController ()
 
@@ -75,24 +74,12 @@ static const NSInteger kSliderTag = 1337;
 	self.view.autoresizesSubviews = YES;
 	self.view.userInteractionEnabled = YES;
 	
-	// create the reflection view
-	CGRect reflectionRect = imageView.frame;
-	
-	// the reflection is a fraction of the size of the view being reflected
-	reflectionRect.size.height = reflectionRect.size.height * kDefaultReflectionFraction;
-	
-	// and is offset to be at the bottom of the view being reflected
-	reflectionRect = CGRectOffset(reflectionRect, 0, imageView.frame.size.height);
-	
-	reflectionView = [[UIImageView alloc] initWithFrame:reflectionRect];
-
 	// determine the size of the reflection to create
 	NSUInteger reflectionHeight = imageView.bounds.size.height * kDefaultReflectionFraction;
 	
-	// create the reflection image, assign it to the UIImageView and add the image view to the containerView
+	// create the reflection image and assign it to the UIImageView
 	reflectionView.image = [self reflectedImage:imageView withHeight:reflectionHeight];
 	reflectionView.alpha = kDefaultReflectionOpacity;
-	[self.view addSubview:reflectionView];
 }
 
 - (void)viewDidUnload
@@ -116,15 +103,6 @@ static const NSInteger kSliderTag = 1337;
 	UISlider* slider = (UISlider *)sender;
 	CGFloat val = [slider value];
 	
-	// create the reflection view
-	CGRect reflectionRect = imageView.frame;
-	
-	// the reflection is a fraction of the size of the view being reflected
-	reflectionRect.size.height = reflectionRect.size.height * val;
-	
-	// and is offset to be at the bottom of the view being reflected
-	reflectionRect = CGRectOffset(reflectionRect, 0.0, imageView.frame.size.height);
-	reflectionView.frame = reflectionRect;
 	NSUInteger reflectionHeight = imageView.bounds.size.height * val;
 	
 	// create the reflection image, assign it to the UIImageView and add the image view to the containerView
@@ -157,7 +135,7 @@ CGImageRef CreateGradientImage(int pixelsWide, int pixelsHigh)
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
 	
 	// create the bitmap context
-	CGContextRef gradientBitmapContext = CGBitmapContextCreate(nil, pixelsWide, pixelsHigh,
+	CGContextRef gradientBitmapContext = CGBitmapContextCreate(NULL, pixelsWide, pixelsHigh,
 															   8, 0, colorSpace, kCGImageAlphaNone);
 	
 	// define the start and end grayscale values (with the alpha, even though
@@ -190,7 +168,7 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	
 	// create the bitmap context
-	CGContextRef bitmapContext = CGBitmapContextCreate (nil, pixelsWide, pixelsHigh, 8,
+	CGContextRef bitmapContext = CGBitmapContextCreate (NULL, pixelsWide, pixelsHigh, 8,
 														0, colorSpace,
 														// this will give us an optimal BGRA format for the device:
 														(kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst));
@@ -201,27 +179,11 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
 
 - (UIImage *)reflectedImage:(UIImageView *)fromImage withHeight:(NSUInteger)height
 {
-    if (!height) return nil;
+    if(height == 0)
+		return nil;
     
 	// create a bitmap graphics context the size of the image
 	CGContextRef mainViewContentContext = MyCreateBitmapContext(fromImage.bounds.size.width, height);
-	
-	// offset the context -
-	// This is necessary because, by default, the layer created by a view for caching its content is flipped.
-	// But when you actually access the layer content and have it rendered it is inverted.  Since we're only creating
-	// a context the size of our reflection view (a fraction of the size of the main view) we have to translate the
-	// context the delta in size, and render it.
-	//
-	CGFloat translateVertical= fromImage.bounds.size.height - height;
-	CGContextTranslateCTM(mainViewContentContext, 0, -translateVertical);
-	
-	// render the layer into the bitmap context
-	CALayer *layer = fromImage.layer;
-	[layer renderInContext:mainViewContentContext];
-	
-	// create CGImageRef of the main view bitmap content, and then release that bitmap context
-	CGImageRef mainViewContentBitmapContext = CGBitmapContextCreateImage(mainViewContentContext);
-	CGContextRelease(mainViewContentContext);
 	
 	// create a 2 bit CGImage containing a gradient that will be used for masking the 
 	// main view content to create the 'fade' of the reflection.  The CGImageCreateWithMask
@@ -230,9 +192,20 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
 	
 	// create an image by masking the bitmap of the mainView content with the gradient view
 	// then release the  pre-masked content bitmap and the gradient bitmap
-	CGImageRef reflectionImage = CGImageCreateWithMask(mainViewContentBitmapContext, gradientMaskImage);
-	CGImageRelease(mainViewContentBitmapContext);
+	CGContextClipToMask(mainViewContentContext, CGRectMake(0.0, 0.0, fromImage.bounds.size.width, height), gradientMaskImage);
 	CGImageRelease(gradientMaskImage);
+	
+	// In order to grab the part of the image that we want to render, we move the context origin to the
+	// height of the image that we want to capture, then we flip the context so that the image draws upside down.
+	CGContextTranslateCTM(mainViewContentContext, 0.0, height);
+	CGContextScaleCTM(mainViewContentContext, 1.0, -1.0);
+	
+	// draw the image into the bitmap context
+	CGContextDrawImage(mainViewContentContext, fromImage.bounds, fromImage.image.CGImage);
+	
+	// create CGImageRef of the main view bitmap content, and then release that bitmap context
+	CGImageRef reflectionImage = CGBitmapContextCreateImage(mainViewContentContext);
+	CGContextRelease(mainViewContentContext);
 	
 	// convert the finished reflection image to a UIImage 
 	UIImage *theImage = [UIImage imageWithCGImage:reflectionImage];
@@ -272,6 +245,7 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
         cell.textLabel.backgroundColor = [UIColor clearColor];
         cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0];
         cell.textLabel.textColor = [UIColor blackColor];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         UISlider *slider = [[[UISlider alloc] initWithFrame:CGRectMake(cell.contentView.bounds.origin.x + 55.0, 0.0,
 																	   cell.contentView.bounds.size.width - 110.0, 40.0)] autorelease];

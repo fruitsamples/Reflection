@@ -1,9 +1,9 @@
 Reflection
 
-This sample shows how to implement a "reflection" special effect on a given UIImageView most commonly seem in iTunes and iPod player apps.
+This sample shows how to implement a "reflection" special effect on a given UIImageView most commonly seen in iTunes and iPod player apps.
 It allows the rendering effect with "dynamic" input values for 1) reflection height and 2) translucency level.  These values can be plugged into the factory methods provided by this sample to achieve a desired affect.
 
-This sample implements a UIImageView and programmtically builds a "reflection" image view below it using CoreGraphics.  Essentially it builds the reflection using a combination of CGContextRef, CGImageRef and CALayer to do the desired rendering.
+This sample implements a UIImageView and programmatically builds a "reflection" image view below it using CoreGraphics.  Essentially it builds the reflection using a combination of CGContextRef, CGImageRef and CALayer to do the desired rendering.
 
 The main entry method in creating the reflected image is -
 
@@ -16,11 +16,11 @@ reflectionView.alpha = 0.50;
 
 
 Build Requirements
-Mac OS X 10.5.6, iPhone OS SDK 3.0.
+iOS 4.0 SDK
 
 
 Runtime Requirements
-Mac OS X 10.5.6, iPhone OS SDK 3.0.
+iPhone OS 3.2 SDK
 
 
 Using the Sample
@@ -34,10 +34,12 @@ main.m - Main source file for this sample.
 AppDelegate.h/.m - The application's delegate to setup its window and content.
 MyViewController.h/.m - The main UIViewController containing a the UIImageView and its reflection.
 
-
 Changes from Previous Versions
+1.5 - Changed deployment target back to iPhone OS 3.2 and added CFBundleIconFiles in Info.plist.
+1.4 - Upgraded project to build with the iOS 4 SDK.
+1.3 - Minor efficiency improvements, editoral fixes.
 1.2 - Fixed a memory leak in CreateGradientImage.
 1.1 - Updated to use iPhone 3.0 table cell styles. Fixed an error when reflection height was 0;
 1.0 - first release
 
-Copyright © 2008-2009 Apple Inc. All rights reserved.
+Copyright � 2008-2010 Apple Inc. All rights reserved.
