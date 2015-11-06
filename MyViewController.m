@@ -1,7 +1,7 @@
 /*
      File: MyViewController.m
  Abstract: Main view controller for displaying the image, reflection and slider table.
-  Version: 1.1
+  Version: 1.2
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -175,6 +175,7 @@ CGImageRef CreateGradientImage(int pixelsWide, int pixelsHigh)
 	// draw the gradient into the gray bitmap context
 	CGContextDrawLinearGradient(gradientBitmapContext, grayScaleGradient, gradientStartPoint,
 								gradientEndPoint, kCGGradientDrawsAfterEndLocation);
+	CGGradientRelease(grayScaleGradient);
 	
 	// convert the context into a CGImageRef and release the context
 	theCGImage = CGBitmapContextCreateImage(gradientBitmapContext);

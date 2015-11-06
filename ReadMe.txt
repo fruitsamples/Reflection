@@ -36,6 +36,7 @@ MyViewController.h/.m - The main UIViewController containing a the UIImageView a
 
 
 Changes from Previous Versions
+1.2 - Fixed a memory leak in CreateGradientImage.
 1.1 - Updated to use iPhone 3.0 table cell styles. Fixed an error when reflection height was 0;
 1.0 - first release
 
